@@ -18,6 +18,12 @@ type ServerConfig struct {
 	IdleTimeout  time.Duration
 }
 
+const (
+	defaultReadTimeout  = 5 * time.Second
+	defaultWriteTimeout = 10 * time.Second
+	defaultIdleTimeout  = 120 * time.Second
+)
+
 func LoadConfig() (Config, error) {
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
@@ -29,28 +35,13 @@ func LoadConfig() (Config, error) {
 		return Config{}, fmt.Errorf("BASE_URL environment variable is required")
 	}
 
-	readTimeout, err := getRequiredEnvDuration("SERVER_READ_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
-	writeTimeout, err := getRequiredEnvDuration("SERVER_WRITE_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
-	idleTimeout, err := getRequiredEnvDuration("SERVER_IDLE_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
 	config := Config{
 		ServerPort: port,
 		BaseURL:    baseURL,
 		Server: ServerConfig{
-			ReadTimeout:  readTimeout,
-			WriteTimeout: writeTimeout,
-			IdleTimeout:  idleTimeout,
+			ReadTimeout:  defaultReadTimeout,
+			WriteTimeout: defaultWriteTimeout,
+			IdleTimeout:  defaultIdleTimeout,
 		},
 	}
 
