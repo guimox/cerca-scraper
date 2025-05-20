@@ -27,10 +27,7 @@ const (
 )
 
 func LoadConfig() (Config, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return Config{}, fmt.Errorf("error loading .env file: %v", err)
-	}
+	_ = godotenv.Load()
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
