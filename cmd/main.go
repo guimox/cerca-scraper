@@ -15,7 +15,9 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /station/{stationNameSlug}", handler.HandleStation)
+
+	mux.HandleFunc("GET /stations/{stationNameSlug}", handler.HandleSingleStation)
+	mux.HandleFunc("GET /stations", handler.HandleAllStations)
 
 	server := &http.Server{
 		Addr:         config.GetServerAddress(),

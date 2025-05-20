@@ -14,6 +14,23 @@ func ScrapeStation(stationSlug string) (schedule.TableData, error) {
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"),
 	)
 
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+		r.Headers.Set("Accept-Language", "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6,ak;q=0.5")
+		r.Headers.Set("Accept-Encoding", "gzip, deflate, br, zstd")
+		r.Headers.Set("Cache-Control", "max-age=0")
+		r.Headers.Set("Sec-Ch-Ua", "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"")
+		r.Headers.Set("Sec-Ch-Ua-Mobile", "?0")
+		r.Headers.Set("Sec-Ch-Ua-Platform", "\"Linux\"")
+		r.Headers.Set("Sec-Fetch-Dest", "document")
+		r.Headers.Set("Sec-Fetch-Mode", "navigate")
+		r.Headers.Set("Sec-Fetch-Site", "none")
+		r.Headers.Set("Sec-Fetch-User", "?1")
+		r.Headers.Set("Upgrade-Insecure-Requests", "1")
+		r.Headers.Set("Priority", "u=0, i")
+		r.Headers.Set("Cookie", "COOKIE_SUPPORT=true; GUEST_LANGUAGE_ID=es_ES")
+	})
+
 	tableData := schedule.NewTableData()
 
 	c.OnHTML("div.journal-content-article div.detalle-estacion h1", func(e *colly.HTMLElement) {

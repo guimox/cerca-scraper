@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func HandleStation(w http.ResponseWriter, r *http.Request) {
+func HandleSingleStation(w http.ResponseWriter, r *http.Request) {
 	stationName := r.PathValue("stationNameSlug")
 
 	if r.Method != http.MethodGet {

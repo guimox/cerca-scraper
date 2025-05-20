@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -25,6 +27,11 @@ const (
 )
 
 func LoadConfig() (Config, error) {
+	err := godotenv.Load()
+	if err != nil {
+		return Config{}, fmt.Errorf("error loading .env file: %v", err)
+	}
+
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		return Config{}, fmt.Errorf("SERVER_PORT environment variable is required")
