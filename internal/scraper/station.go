@@ -1,34 +1,31 @@
-package main
+package scraper
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
+	"cercu-scraper/internal/constants"
+	"cercu-scraper/internal/schedule"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 )
 
-type Train struct {
-	Time        string `json:"time"`
-	Destination string `json:"destination"`
-	TrainID     string `json:"train_id"`
-	Via         string `json:"via"`
-}
-
-type TableData struct {
-	Trains []Train `json:"trains"`
-}
-
-func main() {
+func ScrapeStation(stationSlug string) (schedule.TableData, error) {
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"),
 	)
 
-	var tableData TableData
+	tableData := schedule.NewTableData()
+
+	c.OnHTML("div.journal-content-article div.detalle-estacion h1", func(e *colly.HTMLElement) {
+		stationNameText := e.Text
+		stationNameText = strings.TrimSpace(stationNameText)
+		if stationNameText != "" {
+			tableData.StationName = stationNameText
+		}
+	})
 
 	c.OnHTML("table.adif-table tr.horario-row", func(e *colly.HTMLElement) {
-		train := Train{}
+		train := schedule.NewTrain()
 
 		timeText := e.ChildText("td.col-hora div span")
 		train.Time = strings.TrimSpace(timeText)
@@ -47,17 +44,15 @@ func main() {
 		}
 	})
 
-	url := "https://www.adif.es/w/18000-madrid-atocha-c." // Adjust this URL as needed
-	fmt.Printf("Scraping %s...\n", url)
+	url := constants.BaseURL + stationSlug
+
 	err := c.Visit(url)
 	if err != nil {
-		log.Fatalf("Error visiting website: %v", err)
+		return schedule.NewTableData(), err
 	}
 
-	jsonResult, err := json.MarshalIndent(tableData, "", "  ")
-	if err != nil {
-		log.Fatalf("Error creating JSON: %v", err)
-	}
+	tableData.Station = stationSlug
+	tableData.Timestamp = time.Now().Format(time.RFC3339)
 
-	fmt.Println(string(jsonResult))
+	return tableData, nil
 }
