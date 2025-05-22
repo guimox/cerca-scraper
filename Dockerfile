@@ -7,14 +7,14 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o cercu-scraper ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o cerca-scraper ./cmd/main.go
 
 FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/cercu-scraper .
+COPY --from=builder /app/cerca-scraper .
 
 EXPOSE 8082
 
-CMD ["./cercu-scraper"]
+CMD ["./cerca-scraper"]
