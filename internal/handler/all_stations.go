@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"cercu-scraper/internal/constants"
+	"cerca-scraper/internal/constants"
 	"encoding/json"
 	"log"
 	"net/http"

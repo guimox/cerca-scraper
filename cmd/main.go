@@ -1,8 +1,9 @@
 package main
 
 import (
-	"cercu-scraper/internal/config"
-	"cercu-scraper/internal/handler"
+	"cerca-scraper/internal/config"
+	"cerca-scraper/internal/handler"
+	"cerca-scraper/internal/queue"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,9 +15,17 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
+	rabbitMQ, err := queue.NewRabbitMQConfig("amqp://user:password@localhost:5672/")
+	if err != nil {
+		log.Fatal("cannot initialize RabbitMQ:", err)
+	}
+	defer rabbitMQ.Close()
+
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /stations/{stationNameSlug}", handler.HandleSingleStation)
+	h := handler.NewHandler(rabbitMQ)
+
+	mux.HandleFunc("GET /schedule/{stationNameSlug}", h.HandleSingleStation)
 	mux.HandleFunc("GET /stations", handler.HandleAllStations)
 
 	server := &http.Server{

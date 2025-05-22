@@ -1,10 +1,10 @@
-# Cercu Scraper
+# Cerca Scraper
 
 A Go web scraper that fetches real-time train information from ADIF (Spanish Railway Infrastructure Administrator) stations.
 
 ## Description
 
-Cercu Scraper is a web service that provides train schedule information for Madrid's Cercanías stations. It scrapes data from ADIF's website and returns it in a structured JSON format.
+Cerca Scraper is a web service that provides train schedule information for Madrid's Cercanías stations. It scrapes data from ADIF's website and returns it in a structured JSON format.
 
 ## Features
 

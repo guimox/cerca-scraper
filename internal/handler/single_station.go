@@ -1,15 +1,26 @@
 package handler
 
 import (
-	"cercu-scraper/internal/constants"
-	"cercu-scraper/internal/scraper"
+	"cerca-scraper/internal/constants"
+	"cerca-scraper/internal/queue"
+	"cerca-scraper/internal/scraper"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
 
-func HandleSingleStation(w http.ResponseWriter, r *http.Request) {
+type Handler struct {
+	rabbitMQ *queue.RabbitMQConfig
+}
+
+func NewHandler(rabbitMQ *queue.RabbitMQConfig) *Handler {
+	return &Handler{
+		rabbitMQ: rabbitMQ,
+	}
+}
+
+func (h *Handler) HandleSingleStation(w http.ResponseWriter, r *http.Request) {
 	stationName := r.PathValue("stationNameSlug")
 
 	if r.Method != http.MethodGet {
@@ -27,6 +38,10 @@ func HandleSingleStation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error scraping station: %v", err), http.StatusInternalServerError)
 		return
+	}
+
+	if err := h.rabbitMQ.PublishSchedule(data); err != nil {
+		log.Printf("Error publishing to queue: %v", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

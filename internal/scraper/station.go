@@ -1,8 +1,8 @@
 package scraper
 
 import (
-	"cercu-scraper/internal/constants"
-	"cercu-scraper/internal/schedule"
+	"cerca-scraper/internal/constants"
+	"cerca-scraper/internal/schedule"
 	"strings"
 	"time"
 
@@ -51,12 +51,12 @@ func ScrapeStation(stationSlug string) (schedule.TableData, error) {
 		train.Destination = strings.TrimSpace(destinationText)
 
 		trainIDText := e.ChildText("td.col-tren div span.lineColored")
-		train.TrainID = strings.TrimSpace(trainIDText)
+		train.TrainName = strings.TrimSpace(trainIDText)
 
 		viaText := e.ChildText("td.col-via div")
 		train.Via = strings.TrimSpace(viaText)
 
-		if train.Time != "" || train.Destination != "" || train.TrainID != "" || train.Via != "" {
+		if train.Time != "" || train.Destination != "" || train.TrainName != "" || train.Via != "" {
 			tableData.Trains = append(tableData.Trains, train)
 		}
 	})
