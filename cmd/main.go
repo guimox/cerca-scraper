@@ -15,7 +15,14 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
-	rabbitMQ, err := queue.NewRabbitMQConfig("amqp://user:password@localhost:5672/")
+	rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s:%s/",
+		config.RabbitMQ.User,
+		config.RabbitMQ.Password,
+		config.RabbitMQ.Host,
+		config.RabbitMQ.Port,
+	)
+
+	rabbitMQ, err := queue.NewRabbitMQConfig(rabbitMQURL)
 	if err != nil {
 		log.Fatal("cannot initialize RabbitMQ:", err)
 	}

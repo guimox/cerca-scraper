@@ -62,4 +62,8 @@ jobs:
               -p 8082:8082 \
               -e SERVER_PORT="8082" \
               -e BASE_URL="${{ secrets.BASE_URL }}" \
+              -e RABBITMQ_USER="${{ secrets.RABBITMQ_USER }}" \
+              -e RABBITMQ_PASSWORD="${{ secrets.RABBITMQ_PASSWORD }}" \
+              -e RABBITMQ_HOST="${{ secrets.RABBITMQ_HOST }}" \
+              -e RABBITMQ_PORT="${{ secrets.RABBITMQ_PORT }}" \
               ghcr.io/${{ github.repository }}/${{ secrets.DOCKER_CONTAINER_NAME }}:v1.0.0
